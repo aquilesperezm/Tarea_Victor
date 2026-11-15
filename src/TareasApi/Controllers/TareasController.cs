@@ -8,7 +8,6 @@ namespace TareasApi.Controllers;
 
 [ApiController]
 [Route("api/tareas")]
-[Produces("application/json")]
 public class TareasController(TareasDbContext db) : ControllerBase
 {
     [HttpGet]
