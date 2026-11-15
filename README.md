@@ -174,7 +174,7 @@ Trabajé con **Claude Code** (asistente de programación en el editor) durante t
 
 Estos problemas no se veían leyendo el código generado. Salieron al compilar, al probar la API con peticiones reales y al ejecutar los tests:
 - Por defecto se instalaba `Microsoft.EntityFrameworkCore.Design` **11**, incompatible con .NET 10. Se fijó la versión 10.0.4.
-- La plantilla de .NET traía `Microsoft.OpenApi` 2.0.0, con una **vulnerabilidad conocida**. Se actualizó a 2.13.0.
+- La plantilla de .NET traía `Microsoft.OpenApi` 2.0.0 y EF Core SQLite traía `SQLitePCLRaw.lib.e_sqlite3` 2.1.11, ambas con **vulnerabilidades conocidas**. Se fijaron versiones corregidas (2.13.0 y 2.1.14).
 - Al enviar un estado o una fecha no válidos, el 400 mostraba **tipos internos de .NET** y un error duplicado. Se escribió la fábrica de respuestas de `Errores/RespuestaValidacion.cs`.
 - Las claves de error de la query string salían en PascalCase (`Page`) y en inglés. Se normalizaron.
 - El filtro `?estado=en_curso` no funcionaba con el *binding* por defecto. Se cambió a un parseo propio.
