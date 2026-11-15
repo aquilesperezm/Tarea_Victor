@@ -1,6 +1,48 @@
-@TareasApi_HostAddress = http://localhost:5296
+@base = http://localhost:5296/api/tareas
 
-GET {{TareasApi_HostAddress}}/weatherforecast/
-Accept: application/json
+### Crear tarea
+POST {{base}}
+Content-Type: application/json
 
-###
+{
+  "titulo": "Preparar demo",
+  "descripcion": "Slides y entorno de pruebas",
+  "estado": "pendiente",
+  "responsable": "ana",
+  "fechaLimite": "2026-12-01"
+}
+
+### Listar (paginado)
+GET {{base}}?page=1&pageSize=10
+
+### Filtrar por estado y responsable
+GET {{base}}?estado=en_curso&responsable=ana
+
+### Ver una tarea
+GET {{base}}/1
+
+### Editar (reemplazo completo)
+PUT {{base}}/1
+Content-Type: application/json
+
+{
+  "titulo": "Preparar demo",
+  "descripcion": "Slides y entorno de pruebas",
+  "estado": "en_curso",
+  "responsable": "ana",
+  "fechaLimite": "2026-12-02"
+}
+
+### Borrar
+DELETE {{base}}/1
+
+### Error de validación (400)
+POST {{base}}
+Content-Type: application/json
+
+{
+  "titulo": "",
+  "estado": "terminada",
+  "responsable": "ana",
+  "fechaLimite": "2026-13-45"
+}

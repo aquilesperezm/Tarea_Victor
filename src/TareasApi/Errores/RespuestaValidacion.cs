@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -43,7 +44,9 @@ public static class RespuestaValidacion
             }
             else
             {
-                errores[clave] = entrada.Errors.Select(e => e.ErrorMessage).ToArray();
+                // Parámetros de query/ruta llegan con el nombre de C# ("Page"): se normalizan a camelCase.
+                errores[JsonNamingPolicy.CamelCase.ConvertName(clave)] =
+                    entrada.Errors.Select(e => e.ErrorMessage).ToArray();
             }
         }
 

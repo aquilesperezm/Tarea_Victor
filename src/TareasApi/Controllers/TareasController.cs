@@ -12,10 +12,30 @@ namespace TareasApi.Controllers;
 public class TareasController(TareasDbContext db) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TareaResponse>>> Listar(CancellationToken ct)
+    public async Task<ActionResult<PaginaResponse<TareaResponse>>> Listar(
+        [FromQuery] ListarTareasQuery query, CancellationToken ct)
     {
-        var tareas = await db.Tareas.AsNoTracking().OrderBy(t => t.Id).ToListAsync(ct);
-        return Ok(tareas.Select(TareaResponse.From));
+        var consulta = db.Tareas.AsNoTracking();
+
+        if (EstadoTareaTexto.TryParse(query.Estado, out var estado))
+            consulta = consulta.Where(t => t.Estado == estado);
+
+        if (!string.IsNullOrWhiteSpace(query.Responsable))
+        {
+            var responsable = query.Responsable.Trim().ToLower();
+            consulta = consulta.Where(t => t.Responsable.ToLower() == responsable);
+        }
+
+        var total = await consulta.CountAsync(ct);
+        var items = await consulta
+            .OrderBy(t => t.FechaLimite).ThenBy(t => t.Id) // orden estable para paginar
+            .Skip((query.Page - 1) * query.PageSize)
+            .Take(query.PageSize)
+            .Select(t => TareaResponse.From(t))
+            .ToListAsync(ct);
+
+        var totalPages = (int)Math.Ceiling(total / (double)query.PageSize);
+        return Ok(new PaginaResponse<TareaResponse>(items, total, query.Page, query.PageSize, totalPages));
     }
 
     [HttpGet("{id:int}")]

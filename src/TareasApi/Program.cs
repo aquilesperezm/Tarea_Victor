@@ -14,6 +14,9 @@ builder.Services
     {
         // Las claves de error usan el nombre JSON (camelCase: "titulo") y no el de C# ("Titulo").
         options.ModelMetadataDetailsProviders.Add(new SystemTextJsonValidationMetadataProvider());
+        // Mensaje en español cuando un parámetro de query no tiene el tipo esperado (?page=abc).
+        options.ModelBindingMessageProvider.SetAttemptedValueIsInvalidAccessor(
+            (valor, _) => $"El valor '{valor}' no es válido.");
     })
     .ConfigureApiBehaviorOptions(options =>
     {
